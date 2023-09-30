@@ -5,7 +5,7 @@
 use cortex_m_rt::entry;
 use microbit::{display::blocking::Display, hal::Timer, Board};
 use panic_rtt_target as _;
-use rtt_target::rtt_init_print;
+use rtt_target::{rtt_init_print, rprintln};
 
 #[entry]
 fn main() -> ! {
@@ -17,6 +17,8 @@ fn main() -> ! {
     for (i, j) in border_5x5().cycle() {
         let mut leds = ALL_OFF;
         leds[i][j] = 1;
+
+        // rprintln!("{:#?}", leds);
 
         display.show(&mut timer, leds, 100);
         display.clear();
