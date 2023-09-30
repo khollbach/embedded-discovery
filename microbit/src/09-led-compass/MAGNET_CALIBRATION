@@ -1,0 +1,37 @@
+Raw readings, N E S W:
+
+14:30:24.345 0 Magnetization(?): x -18000 y -149250 z 126300
+14:30:24.345 3 Magnetization(?): x -18600 y -149550 z 125250
+14:31:25.024 0 Magnetization(?): x -38100 y -145650 z 154500
+14:31:25.049 31 Magnetization(?): x -39150 y -145200 z 153600
+14:32:20.905 0 Magnetization(?): x 11850 y -209550 z 127050
+14:32:20.930 10 Magnetization(?): x 12450 y -208650 z 127050
+14:32:49.635 0 Magnetization(?): x -5400 y -171900 z 133050
+14:32:49.660 21 Magnetization(?): x -5100 y -171300 z 133350
+
+
+
+Calibration, from playing the little tilt-to-live game:
+
+14:51:28.266 Calibration: Calibration { center: Measurement { x: -36586, y: 33678, z:
+103022 }, scale: Measurement { x: 3192, y: 4268, z: 3111 }, radius: 59629 }
+14:51:28.266 Calibration done, entering busy loop
+14:51:28.266 x: -20306, y: 52792, z: 28339
+
+And then a second time, for good measure:
+
+14:58:22.642 Calibration: Calibration { center: Measurement { x: -24728, y: 32424, z: 86592 },
+scale: Measurement { x: 1289, y: 1309, z: 1348 }, radius: 42624 }
+14:58:22.642 Calibration done, entering busy loop
+14:58:22.642 x: -52508, y: 2049, z: -56
+14:58:22.689 x: -46372, y: 10168, z: 11989
+14:58:22.780 x: -36976, y: 727, z: 24824
+14:58:22.871 x: -18377, y: -8336, z: 33315
+14:58:22.985 x: -2270, y: -10791, z: 36080
+14:58:23.076 x: 3483, y: -7581, z: 36869
+14:58:23.167 x: 5784, y: -8336, z: 36474
+14:58:23.281 x: 6934, y: -8525, z: 36869
+14:58:23.372 x: 6359, y: -9847, z: 37462
+14:58:23.464 x: 9427, y: -7959, z: 34895
+
+^ to be honest, these aren't as close as I thought they'd be, but I guess that's fine.

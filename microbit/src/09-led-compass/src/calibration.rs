@@ -17,9 +17,9 @@ const CALIBRATION_INCREMENT: i32 = 200;
 
 #[derive(Debug)]
 pub struct Calibration {
-    center: Measurement,
-    scale: Measurement,
-    radius: u32,
+    pub center: Measurement,
+    pub scale: Measurement,
+    pub radius: u32,
 }
 
 impl Default for Calibration {
@@ -36,6 +36,7 @@ impl Default for Calibration {
     }
 }
 
+#[allow(dead_code)]
 pub fn calc_calibration<I, T, E>(
     sensor: &mut Lsm303agr<I2cInterface<I>, MagContinuous>,
     display: &mut Display,
