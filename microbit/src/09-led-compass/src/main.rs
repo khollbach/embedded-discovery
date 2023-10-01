@@ -21,6 +21,10 @@ use microbit::{hal::twim, pac::twim0::frequency::FREQUENCY_A};
 
 use lsm303agr::{AccelOutputDataRate, Lsm303agr, MagOutputDataRate};
 
+// You'll find this useful ;-)
+use core::f32::consts::PI;
+use libm::{atan2f, sqrtf};
+
 const CALIBRATION: Calibration = Calibration {
     center: Measurement {
         x: -24728,
@@ -63,13 +67,61 @@ fn main() -> ! {
         let mut data = sensor.mag_data().unwrap();
         data = calibrated_measurement(data, &calibration);
 
-        rprintln!("x: {}, y: {}, z: {}", data.x, data.y, data.z);
+        // rprintln!("x: {}, y: {}, z: {}", data.x, data.y, data.z);
 
-        let dir = match (data.x > 0, data.y > 0) {
-            (true, true) => Direction::NorthEast,
-            (false, true) => Direction::NorthWest,
-            (false, false) => Direction::SouthWest,
-            (true, false) => Direction::SouthEast,
+        let x = data.x as f32;
+        let y = data.y as f32;
+        let z = data.z as f32;
+        let magnitude = sqrtf(x * x + y * y + z * z);
+        rprintln!("{} nT, {} mG", magnitude, magnitude/100.);
+
+        // let dir = match (data.x > 0, data.y > 0) {
+        //     (true, true) => Direction::NorthEast,
+        //     (false, true) => Direction::NorthWest,
+        //     (false, false) => Direction::SouthWest,
+        //     (true, false) => Direction::SouthEast,
+        // };
+
+        // // If I'm facing a given direction, which way is north, relative to my
+        // // current direction?
+        // let arrow = match dir {
+        //     Direction::NorthEast => UP_LEFT,
+        //     Direction::NorthWest => UP_RIGHT,
+        //     Direction::SouthWest => DOWN_RIGHT,
+        //     Direction::SouthEast => DOWN_LEFT,
+        // };
+        // // let arrow = arrow.map(|row| row.map(|x| if x != 0 { 9 } else { 0 }));
+        
+        // let theta = atan2f(data.y as f32, data.x as f32);
+        // let dir = match theta {
+        //     _ if theta > PI / 2. => Direction::NorthWest,
+        //     _ if theta < -PI / 2. => Direction::SouthWest,
+        //     _ if theta >= 0. => Direction::NorthEast,
+        //     _ => Direction::SouthEast,
+        // };
+
+        // // If I'm facing a given direction, which way is north, relative to my
+        // // current direction?
+        // let arrow = match dir {
+        //     Direction::NorthEast => UP_LEFT,
+        //     Direction::NorthWest => UP_RIGHT,
+        //     Direction::SouthWest => DOWN_RIGHT,
+        //     Direction::SouthEast => DOWN_LEFT,
+        // };
+
+        let theta = atan2f(data.y as f32, data.x as f32);
+        let dir = match theta {
+            _ if theta > 7./8. * PI => Direction::West,
+            _ if theta > 5./8. * PI => Direction::NorthWest,
+            _ if theta > 3./8. * PI => Direction::North,
+            _ if theta > 1./8. * PI => Direction::NorthEast,
+
+            _ if theta < -7./8. * PI => Direction::West,
+            _ if theta < -5./8. * PI => Direction::SouthWest,
+            _ if theta < -3./8. * PI => Direction::South,
+            _ if theta < -1./8. * PI => Direction::SouthEast,
+
+            _ => Direction::East,
         };
 
         // If I'm facing a given direction, which way is north, relative to my
@@ -79,15 +131,30 @@ fn main() -> ! {
             Direction::NorthWest => UP_RIGHT,
             Direction::SouthWest => DOWN_RIGHT,
             Direction::SouthEast => DOWN_LEFT,
+
+            Direction::North => UP,
+            Direction::South => DOWN,
+            Direction::East => LEFT,
+            Direction::West => RIGHT,
         };
-        // let arrow = arrow.map(|row| row.map(|x| if x != 0 { 9 } else { 0 }));
 
         display.show(&mut timer, arrow, 100 /* ms */);
         // interrupt::free(|_| display.show(&BitImage::new(&arrow)));
     }
 }
 
+// enum Direction {
+//     NorthEast,
+//     NorthWest,
+//     SouthEast,
+//     SouthWest,
+// }
+
 enum Direction {
+    North,
+    East,
+    South,
+    West,
     NorthEast,
     NorthWest,
     SouthEast,
@@ -124,4 +191,37 @@ const DOWN_RIGHT: [[u8; 5]; 5] = [
     [0, 0, 1, 0, 1],
     [0, 0, 0, 1, 1],
     [0, 1, 1, 1, 1],
+];
+
+const UP: [[u8; 5]; 5] = [
+    [0, 0, 1, 0, 0],
+    [0, 1, 1, 1, 0],
+    [1, 0, 1, 0, 1],
+    [0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0],
+];
+
+
+const DOWN: [[u8; 5]; 5] = [
+    [0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0],
+    [1, 0, 1, 0, 1],
+    [0, 1, 1, 1, 0],
+    [0, 0, 1, 0, 0],
+];
+
+const LEFT: [[u8; 5]; 5] = [
+    [0, 0, 1, 0, 0],
+    [0, 1, 0, 0, 0],
+    [1, 1, 1, 1, 1],
+    [0, 1, 0, 0, 0],
+    [0, 0, 1, 0, 0],
+];
+
+const RIGHT: [[u8; 5]; 5] = [
+    [0, 0, 1, 0, 0],
+    [0, 0, 0, 1, 0],
+    [1, 1, 1, 1, 1],
+    [0, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0],
 ];
